@@ -236,7 +236,7 @@
  <customwidgets>
   <customwidget>
    <class>PointCloudWidget</class>
-   <extends>QWidget</extends>
+   <extends>QVTKWidget</extends>
    <header>PointCloudWidget.h</header>
    <container>1</container>
    <slots>

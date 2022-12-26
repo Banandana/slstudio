@@ -36,8 +36,10 @@ PreferenceDialog::PreferenceDialog(QWidget *parent)
   // Query cameras
   vector<vector<CameraInfo>> interfaceCameraList =
       CameraFactory::GetInterfaceCameraList();
+  printf("Interface Camera List Size = %u\n", interfaceCameraList.size());
   for (unsigned int i = 0; i < interfaceCameraList.size(); i++) {
     vector<CameraInfo> cameraList = interfaceCameraList[i];
+    printf("Interface Camera Count = %u\n", cameraList.size());
     for (unsigned int j = 0; j < cameraList.size(); j++) {
       QString cameraString = QString("%1: %2")
                                  .arg(cameraList[j].vendor.c_str())

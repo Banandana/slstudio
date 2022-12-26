@@ -1,6 +1,6 @@
 #include "PointCloudWidget.h"
 
-#include "CalibrationData.h"
+#include "calibrator/CalibrationData.h"
 #include <opencv2/core/eigen.hpp>
 
 #include <vtkPNGWriter.h>
@@ -55,7 +55,7 @@ PointCloudWidget::PointCloudWidget(QWidget *parent)
   visualizer->setBackgroundColor(0, 0, 0);
   visualizer->addCoordinateSystem(50, "camera", 0);
   visualizer->setCameraPosition(0, 0, -50, 0, 0, 0, 0, -1, 0);
-  visualizer->setCameraClipDistances(0.1, 10000);
+  visualizer->setCameraClipDistances(0.1, 10000000000);
   // Initialize point cloud color handler
   colorHandler = new pcl::visualization::PointCloudColorHandlerRGBField<
       pcl::PointXYZRGB>();
@@ -83,9 +83,17 @@ void PointCloudWidget::updateCalibration() {
   visualizer->addCoordinateSystem(50, "camera", 0);
 
   // Projector coordinate system
+  
   cv::Mat TransformPCV(3, 4, CV_32F);
   cv::Mat(calibration.Rp).copyTo(TransformPCV.colRange(0, 3));
   cv::Mat(calibration.Tp).copyTo(TransformPCV.col(3));
+  
+ /**
+  cv::Mat TransformPCV(4, 4, CV_32F, 0.0);
+	cv::Mat(calibration.Rp).copyTo(TransformPCV.colRange(0, 3).rowRange(0, 3));
+	cv::Mat(calibration.Tp).copyTo(TransformPCV.col(3).rowRange(0, 3));
+	TransformPCV.at<float>(3, 3) = 1.0;
+  **/
   Eigen::Affine3f TransformP;
   cv::cv2eigen(TransformPCV, TransformP.matrix());
 
@@ -150,7 +158,8 @@ void PointCloudWidget::updatePointCloud(PointCloudConstPtr _pointCloudPCL) {
     }
   }
 
-  this->GetRenderWindow()->Render();
+  //this->paintGL();
+  this->renderWindow()->Render();
   emit newPointCloudDisplayed();
 
   //    std::cout << "PCL Widget: " << time.restart() << "ms" << std::endl;

@@ -9,8 +9,8 @@
     #define M_PI 3.14159265358979323846
 #endif
 
-static unsigned int nPhases = 24;
-static unsigned int nSteps = 9;
+static unsigned int nPhases = 30;
+static unsigned int nSteps = 12;
 
 // Encoder
 EncoderPhaseShiftNStep::EncoderPhaseShiftNStep(unsigned int _screenCols, unsigned int _screenRows, CodecDir _dir) : Encoder(_screenCols, _screenRows, _dir){
@@ -109,7 +109,7 @@ void DecoderPhaseShiftNStep::decodeFrames(cv::Mat &up, cv::Mat &vp, cv::Mat &mas
         up = pstools::unwrapWithCue(up, upCue, nPhases);
         up *= screenCols/(2*pi);
 
-        //cv::GaussianBlur(up, up, cv::Size(0,0), 1, 1);
+        cv::GaussianBlur(up, up, cv::Size(0,0), 1, 1);
 
     }
     if(dir & CodecDirVertical){

@@ -2,13 +2,13 @@
 #define SLPOINTCLOUDWIDGET_H
 
 #include <QtGui>
-#include <QGLWidget>
+#include <QOpenGLWidget>
 #include <opencv2/opencv.hpp>
 
-class SLPointCloudWidget : public QGLWidget {
+class SLPointCloudWidget : public QOpenGLWidget {
     Q_OBJECT
     public:
-        SLPointCloudWidget(QWidget * parent = 0) : QGLWidget(parent), rotationX(0), rotationY(0), rotationZ(0){}
+        SLPointCloudWidget(QWidget * parent = 0) : QOpenGLWidget(parent), rotationX(0), rotationY(0), rotationZ(0){}
     public slots:
         void updatePointCloud(cv::Mat _pointCloud, cv::Mat _shading);
     protected:

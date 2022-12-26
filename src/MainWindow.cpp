@@ -109,6 +109,7 @@ void MainWindow::onShowDecoderVp(cv::Mat im) {
 
 void MainWindow::onActionStart() {
 
+  printf("onActionStart\n");
   QSettings settings("SLStudio");
   int iNum = settings.value("camera/interfaceNumber", -1).toInt();
   if (iNum == -1) {
@@ -120,7 +121,7 @@ void MainWindow::onActionStart() {
       settings.setValue("virtualCameraPath", path);
     }
   }
-
+  printf("new ScanWorker\n");
   // Prepare scanWorker on separate thread
   scanWorker = new ScanWorker(this);
   scanWorkerThread = new QThread(this);
@@ -210,6 +211,7 @@ void MainWindow::onActionStop() {
 
 void MainWindow::onScanWorkerFinished() {
 
+  printf("onScanWorkerFinished\n");
   // Terminate scan worker thread
   scanWorkerThread->quit();
   scanWorkerThread->wait();
@@ -376,8 +378,9 @@ void MainWindow::on_actionUpload_Scan_Patterns_triggered() {
                                             screenResY, dir)
                      .release();
 
+  printf("Encoder created, entering future code\n");
   // Run pattern upload on background thread
-  QFutureWatcher<void> *watcher = new QFutureWatcher<void>(this);
+  QFutureWatcher<bool> *watcher = new QFutureWatcher<bool>(this);
   connect(watcher, &QFutureWatcher<void>::finished, this,
           [projector, encoder]() {
             std::cout << "Upload done";
@@ -411,7 +414,7 @@ void MainWindow::on_actionUpload_Calibration_Patterns_triggered() {
           .release();
 
   // Run pattern upload on background thread
-  QFutureWatcher<void> *watcher = new QFutureWatcher<void>(this);
+  QFutureWatcher<bool> *watcher = new QFutureWatcher<bool>(this);
   connect(watcher, &QFutureWatcher<void>::finished, this,
           [projector, encoder]() {
             std::cout << "Upload done";

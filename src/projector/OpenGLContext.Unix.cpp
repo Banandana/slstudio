@@ -32,8 +32,8 @@ std::vector<ScreenInfo> OpenGLContext::GetScreenInfo() {
   for (unsigned int i = 0; i < nScreens; i++) {
     Screen *XScreen = ScreenOfDisplay(display, i);
     ScreenInfo screen;
-    screen.resX = XScreen->width;
-    screen.resY = XScreen->height;
+    screen.resX = 1920;//XScreen->width;
+    screen.resY = 1080;//XScreen->height;
     char buff[100];
     sprintf(buff, "XScreen no. %d", i);
     screen.name = buff;
@@ -57,8 +57,11 @@ OpenGLContext::OpenGLContext(uint _screenNum) : screenNum(_screenNum) {
 
   Screen *xScreen = ScreenOfDisplay(contextInfo->display, screenNum);
 
-  screenResX = xScreen->width;
-  screenResY = xScreen->height;
+  //screenResX = xScreen->width;
+  //screenResY = xScreen->height;
+
+  screenResX = 1920;//xScreen->width;
+  screenResY = 1080;//xScreen->height;
 
   // Create a OpenGL OpenGLContext on the specified X screen
   contextInfo->window = RootWindow(contextInfo->display, screenNum);

@@ -16,7 +16,8 @@ ProjectorOpenGL::ProjectorOpenGL(unsigned int _screenNum) {
   glClear(GL_COLOR_BUFFER_BIT);
 
   // Set up for 1:1 pixel mapping in the z=0 plane. Upper left corner is (0,0).
-  glViewport(0, 0, context->getScreenResX(), context->getScreenResY());
+  //glViewport(0, 0, context->getScreenResX(), context->getScreenResY());
+  glViewport(0, 0, 1920, 1080);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho(0, 1, 1, 0, -1, 1);
@@ -96,8 +97,10 @@ void ProjectorOpenGL::setPatterns(
     GLuint renderBuffer;
     glGenRenderbuffers(1, &renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, context->getScreenResX(),
-                          context->getScreenResY());
+    //glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, context->getScreenResX(),
+    //                      context->getScreenResY());
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, 1920,
+                          1080);
 
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                               GL_RENDERBUFFER, renderBuffer);
@@ -119,8 +122,10 @@ void ProjectorOpenGL::setPatterns(
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    float texWidthf = (float)context->getScreenResX() / patternWidth;
-    float texHeightf = (float)context->getScreenResY() / patternHeight;
+    //float texWidthf = (float)context->getScreenResX() / patternWidth;
+    //float texHeightf = (float)context->getScreenResY() / patternHeight;
+    float texWidthf = (float)1920 / patternWidth;
+    float texHeightf = (float)1080 / patternHeight;
 
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
@@ -148,8 +153,12 @@ void ProjectorOpenGL::displayPattern(unsigned int patternNumber) {
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBuffers[patternNumber]);
 
-  glBlitFramebuffer(0, 0, context->getScreenResX(), context->getScreenResY(), 0,
-                    0, context->getScreenResX(), context->getScreenResY(),
+  //glBlitFramebuffer(0, 0, context->getScreenResX(), context->getScreenResY(), 0,
+  //                  0, context->getScreenResX(), context->getScreenResY(),
+  //                  GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+  glBlitFramebuffer(0, 0, 1920, 1080, 0,
+                    0, 1920, 1080,
                     GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
   //    glClear(GL_COLOR_BUFFER_BIT);
@@ -178,8 +187,10 @@ void ProjectorOpenGL::displayTexture(const unsigned char *tex,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-  float texWidthf = (float)context->getScreenResX() / texWidth;
-  float texHeightf = (float)context->getScreenResY() / texHeight;
+  //float texWidthf = (float)context->getScreenResX() / texWidth;
+  //float texHeightf = (float)context->getScreenResY() / texHeight;
+  float texWidthf = (float)1920 / texWidth;
+  float texHeightf = (float)1080 / texHeight;
 
   glBegin(GL_QUADS);
   glTexCoord2f(0, 0);
@@ -210,8 +221,10 @@ void ProjectorOpenGL::displayWhite() {
 }
 
 void ProjectorOpenGL::getScreenRes(unsigned int *nx, unsigned int *ny) {
-  *nx = context->getScreenResX();
-  *ny = context->getScreenResY();
+  //*nx = context->getScreenResX();
+  //*ny = context->getScreenResY();
+  *nx = 1920;
+  *ny = 1080;
 }
 
 ProjectorOpenGL::~ProjectorOpenGL() {

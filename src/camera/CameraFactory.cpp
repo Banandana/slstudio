@@ -13,6 +13,8 @@
 #include "CameraPointGrey.h"
 #endif
 
+#include "CameraDaheng.h"
+
 // Global camera enumerator
 std::vector<std::vector<CameraInfo>> CameraFactory::GetInterfaceCameraList() {
   std::vector<std::vector<CameraInfo>> ret;
@@ -34,6 +36,9 @@ std::vector<std::vector<CameraInfo>> CameraFactory::GetInterfaceCameraList() {
   ret.push_back(ptgreycameras);
 #endif
 
+  std::vector<CameraInfo> dahengcameras = CameraDaheng::getCameraList();
+  ret.push_back(dahengcameras);
+
   return ret;
 }
 
@@ -42,8 +47,10 @@ std::unique_ptr<Camera>
 CameraFactory::NewCamera(int interfaceNum, int camNum,
                          CameraTriggerMode triggerMode) {
 
-  interfaceNum += 1;
-
+  //interfaceNum += 1;
+  printf("NewCamera\n");
+  printf("Trigger mode = %u\n", triggerMode);
+  return std::make_unique<CameraDaheng>(camNum, triggerMode);
 #ifdef WITH_CAMERAIIDC
   interfaceNum -= 1;
   if (interfaceNum == 0)

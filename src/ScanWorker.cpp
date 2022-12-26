@@ -33,34 +33,38 @@ void ScanWorker::setup() {
   else
     std::cerr << "SLScanWorker: invalid trigger mode "
               << sTriggerMode.toStdString() << std::endl;
-
+  printf("setup() creating camera...\n");
   // Create camera
   int iNum = settings.value("camera/interfaceNumber", -1).toInt();
   int cNum = settings.value("camera/cameraNumber", -1).toInt();
+  printf("Selected interface num = %u\n", iNum);
+  printf("Selected camera num = %u\n", cNum);
+
   if (iNum != -1) {
     camera = CameraFactory::NewCamera(iNum, cNum, triggerMode);
+    printf("NewCamera call complete\n");
   } else {
     camera = std::make_unique<CameraVirtual>(cNum, triggerMode);
   }
-
+    
+  printf("settings.value()...\n");
   // Set camera settings
   CameraSettings camSettings;
   camSettings.shutter = settings.value("camera/shutter", 16.666).toFloat();
   camSettings.gain = 0.0;
+  printf("Calling setCameraSettings...\n");
   camera->setCameraSettings(camSettings);
 
+  printf("Initializing projector...\n");
   // Initialize projector
   int screenNum = settings.value("projector/screenNumber", -1).toInt();
-  if (screenNum != -1) {
-    projector = ProjectorFactory::NewProjector(screenNum);
-  } else {
-    projector = std::make_unique<ProjectorVirtual>(0);
-  }
+  projector = ProjectorFactory::NewProjector(screenNum);
 
   if (projector == nullptr) {
     emit logMessage("SLCalibrationDialog: could not create projector.");
   }
 
+  printf("Initializing encoder...\n");
   // Initialize encoder
   std::string codecName =
       settings.value("pattern/mode", "PhaseShift2x3").toString().toStdString();
@@ -100,6 +104,7 @@ void ScanWorker::setup() {
 
 void ScanWorker::doWork() {
 
+  printf("doWork()\n");
   // State variable
   isWorking = true;
 
@@ -107,6 +112,7 @@ void ScanWorker::doWork() {
   camera->startCapture();
 
   unsigned int N = encoder->getNPatterns();
+  printf("N Patterns = %u\n", N);
 
   QSettings settings("SLStudio");
   unsigned int shift = settings.value("trigger/shift", "0").toInt();
@@ -205,6 +211,8 @@ void ScanWorker::doWork() {
   if (triggerMode == triggerModeHardware)
     camera->stopCapture();
 
+  
+  camera->~Camera();
   // Emit message to e.g. initiate thread break down
   emit finished();
 }
@@ -213,8 +221,6 @@ void ScanWorker::stopWorking() {
   isWorking = false;
   camera->stopCapture();
   projector->displayWhite();
-
-  camera->stopCapture();
 }
 
 ScanWorker::~ScanWorker() {}

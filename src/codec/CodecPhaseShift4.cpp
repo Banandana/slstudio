@@ -47,8 +47,9 @@ void DecoderPhaseShift4::decodeFrames(cv::Mat &up, cv::Mat &vp, cv::Mat &mask, c
     cv::phase(fIcomp[2], -fIcomp[3], up);
     up *= screenCols/(2.0*pi);
 
-//    cv::Mat upCopy = up.clone();
-//    cv::bilateralFilter(upCopy, up, 7, 500, 400);
+    cv::Mat upCopy = up.clone();
+    //cv::bilateralFilter(up, upCopy, 7, 500, 400);
+    //up = upCopy.clone();
     //cv::GaussianBlur(up, up, cv::Size(0,0), 3, 3);
 
     cv::Mat X0, X1, X2;

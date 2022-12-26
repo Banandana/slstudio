@@ -33,6 +33,7 @@ HEADERS  += \
         TriangulatorWorker.h \
         VideoDialog.h \
         VideoWidget.h \
+        camera/daheng/daheng.h \
         camera/Camera.h \
         camera/CameraFactory.h \
         codec/CodecFactory.h \
@@ -60,10 +61,13 @@ HEADERS  += \
         codec/CodecPhaseShiftMicro.h \
         codec/CodecPhaseShiftNStep.h \
         triangulator/Triangulator.h \
-        CalibrationData.h \
-        RBFInterpolator.h \
-        cvtools.h \
-        CalibrationWorker.h
+        calibrator/CalibrationData.h \
+        calibrator/Calibrator.h \
+        calibrator/CalibratorLocHom.h \
+        calibrator/CalibratorRBF.h \
+        calibrator/CThinPlateSpline.h \
+        calibrator/RBFInterpolator.h \
+        cvtools.h
 
 
 SOURCES += main.cpp \
@@ -80,7 +84,9 @@ SOURCES += main.cpp \
         TriangulatorWorker.cpp \
         VideoDialog.cpp \
         VideoWidget.cpp \
+        camera/daheng/daheng.cpp \
         camera/CameraFactory.cpp \
+        camera/CameraDaheng.cpp \
         codec/CodecFactory.cpp \
         projector/ProjectorFactory.cpp \
         projector/ProjectorOpenGL.cpp \
@@ -101,10 +107,12 @@ SOURCES += main.cpp \
         codec/pstools.cpp \
         codec/CodecPhaseShiftNStep.cpp \
         triangulator/Triangulator.cpp \
-        CalibrationData.cpp \
-        RBFInterpolator.cpp \
-        cvtools.cpp \
-        CalibrationWorker.cpp
+        calibrator/CalibrationData.cpp \
+        calibrator/CalibratorLocHom.cpp \
+        calibrator/CalibratorRBF.cpp \
+        calibrator/CThinPlateSpline.cpp \
+        calibrator/RBFInterpolator.cpp \
+        cvtools.cpp
 
 INCLUDEPATH += camera/ projector/ codec/ triangulator/ calibrator/
 
@@ -116,14 +124,17 @@ RESOURCES += \
 unix:!macx {
     CONFIG += link_pkgconfig
     # Link VTK (no pkg-config, only cmake files, hence we link manually for now)
-    INCLUDEPATH += /usr/include/vtk-9.1/
-    LIBS += -lvtkRenderingCore-9.1 -lvtkFiltersGeometry-9.1 -lvtkFiltersCore-9.1 -lvtkCommonExecutionModel-9.1 \
-            -lvtkCommonDataModel-9.1 -lvtkCommonMath-9.1 -lvtkCommonCore-9.1 -lvtkIOImage-9.1 -lvtkGUISupportQt-9.1 -lvtkRenderingOpenGL2-9.1
+    INCLUDEPATH += /usr/local/include/vtk-9.2/
+    LIBS += -L/usr/local/lib -lvtkRenderingCore-9.2 -lvtkFiltersGeometry-9.2 -lvtkFiltersCore-9.2 -lvtkCommonExecutionModel-9.2 \
+            -lvtkCommonDataModel-9.2 -lvtkCommonMath-9.2 -lvtkCommonCore-9.2 -lvtkIOImage-9.2 -lvtkGUISupportQt-9.2 -lvtkRenderingOpenGL2-9.2 -lvtksys-9.2 -lvtkglew-9.2 -lX11 \
+            -lopencv_core -lopencv_3d -lopencv_calib -lopencv_dnn -lopencv_flann -lopencv_video -lopencv_gapi -lopencv_imgproc -lopencv_highgui -lopencv_features2d -lopencv_photo \
+            -lopencv_stereo -lopencv_imgcodecs -lopencv_imgproc -lGLEW -lgxiapi -lpthread 
     # PCL pkg-config workaround
-    LIBS += -lboost_system -lpcl_visualization -lpcl_common -lpcl_io -lpcl_search -lpcl_surface
+    LIBS += -lboost_system -lpcl_visualization -lpcl_common -lpcl_io -lpcl_search -lpcl_surface 
     # PKG-config libs
-    INCLUDEPATH += /usr/include/pcl-1.12 /usr/include/eigen3/
-    PKGCONFIG += opencv4 pcl_visualization-1.12 pcl_surface-1.12 pcl_search-1.12 pcl_filters-1.12 pcl_kdtree-1.12 pcl_tracking-1.12 pcl_features-1.12 flann eigen3
+    INCLUDEPATH += /usr/local/include/pcl-1.12 /usr/local/include/eigen3/ /usr/local/include/opencv5/
+#    PKGCONFIG += opencv5 flann eigen3
+QT += opengl  openglwidgets
 }
 # Windows
 win32 {
@@ -251,7 +262,7 @@ macx {
 unix:!macx{
     SOURCES += projector/OpenGLContext.Unix.cpp
 #    LIBS += -lXxf86vm
-    PKGCONFIG += gl glu glew x11 #xrandr
+    #PKGCONFIG += gl glu glew x11 #xrandr
 #    SOURCES += projector/OpenGLContext.GLFW.cpp
 #    LIBS += -lglfw3 -lXxf86vm -lXi
 }

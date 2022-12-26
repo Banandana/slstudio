@@ -417,7 +417,7 @@ ProjectorLC4500::~ProjectorLC4500() {
 
 void ProjectorLC4500::displayPatternSequence(const int numPatterns,
                                              const int patternNum,
-                                             const double exposurePeriod) {
+                                             const double framePeriod) {
 
   setToPatternMode();
 
@@ -449,12 +449,7 @@ void ProjectorLC4500::displayPatternSequence(const int numPatterns,
   DLPC350_SetPatternConfig(numPatterns, repeat, numPatsForTrigOut2,
                            numSplashImages);
 
-  if (numPatterns <= 6) {
-    DLPC350_SetExposure_FramePeriod(exposurePeriod, exposurePeriod);
-  } else {
-    // for more than 6 patterns, 200ms are added for image loading
-    DLPC350_SetExposure_FramePeriod(exposurePeriod, exposurePeriod + 200000);
-  }
+  DLPC350_SetExposure_FramePeriod(framePeriod, framePeriod);
 
   const int triggerModeInternal = 1;
   DLPC350_SetPatternTriggerMode(triggerModeInternal);

@@ -1,4 +1,4 @@
-#include "SLPointCloudWidget.h"
+#include "SLPointCloudWidgetOld.h"
 #include <cmath>
 #ifdef __APPLE__
     #include <OpenGL/glu.h>
